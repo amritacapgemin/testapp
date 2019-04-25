@@ -77,23 +77,25 @@ app.post('/azure', function (req, response) {
 		 response.setHeader('Content-Type', 'application/json');
 		console.log("Display name ", req.body.queryResult.intent.displayName);
         switch (req.body.queryResult.intent.displayName) {			
-           case "testapp":	
-				var getResourceName = req.body.queryResult.parameters.testapp;
-                var resourceGroupName = getResourceName.toString();
-				response.send(JSON.stringify({ "fulfillmentText": "test data" }));
-				
-              
-				break;		
-			case "testapp1":
-			 response.setHeader('Content-Type', 'application/json');			
+           case "resourcegroup":	
 				var getResourceName = req.body.queryResult.parameters.resourcename;
-              
-			  var getResourceName = req.body.queryResult.parameters.testapp;
                 var resourceGroupName = getResourceName.toString();
-				response.send(JSON.stringify({ "fulfillmentText": "test data" }));
-            break;
+                createResourceGroup(resourceGroupName, function (err, result) {
+                    if (err) {
+                        console.log("error in creating resource group",err);
+						response.send(JSON.stringify({ "fulfillmentText": "Error in creating resource group" }));
+                    } else {
+						console.log("Here is result", result.name);
+                        //response.send(JSON.stringify({ "fulfillmentText": "Resource group is created successfully with name " +result.name}));						
+					slack.send({				  
+						channel: 'azure',
+						text:  'Resource group is created with name '+result.name		
+					}); 
+
+                    }
+                 }); 
+				break;			
 		
-			
         }
     });
 });
@@ -102,22 +104,6 @@ function createResourceGroup(resourceGroupName, callback) {
     var groupParameters = { location: location, tags: { sampletag: 'sampleValue' } };
     console.log('\n1.Creating resource group: ' + resourceGroupName);
     return resourceClient.resourceGroups.createOrUpdate(resourceGroupName, groupParameters, callback);
-}
-/**Function to create storage account name*/
-function createStorageAccount(storageAccountName, resourceGroupName, callback) {
-    console.log('\n2.Creating storage account: ' + storageAccountName);
-    var createParameters = {
-        location: location,
-        sku: {
-            name: accType,
-        },
-        kind: 'Storage',
-        tags: {
-            tag1: 'val1',
-            tag2: 'val2'
-        }
-    };
-    return storageClient.storageAccounts.create(resourceGroupName, storageAccountName, createParameters, callback);
 }
 
 /**Function to set env variabel*/
