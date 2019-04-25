@@ -80,7 +80,7 @@ app.post('/azure', function (req, response) {
            case "resourcegroup":	
 				var getResourceName = req.body.queryResult.parameters.resourcename;
                 var resourceGroupName = getResourceName.toString();
-                createResourceGroup(resourceGroupName, function (err, result) {
+               /*  createResourceGroup(resourceGroupName, function (err, result) {
                     if (err) {
                         console.log("error in creating resource group",err);
 						response.send(JSON.stringify({ "fulfillmentText": "Error in creating resource group" }));
@@ -93,7 +93,7 @@ app.post('/azure', function (req, response) {
 					}); 
 
                     }
-                 }); 
+                 });  */
 				break;			
 		
         }
