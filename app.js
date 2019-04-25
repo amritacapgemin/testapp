@@ -80,6 +80,12 @@ app.post('/azure', function (req, response) {
            case "resourcegroup":	
 				var getResourceName = req.body.queryResult.parameters.resourcename;
                 var resourceGroupName = getResourceName.toString();
+				console.log("test in heroku");
+				slack.send({				  
+						channel: 'azure',
+						text:  'test messge'		
+					}); 
+				
                /*  createResourceGroup(resourceGroupName, function (err, result) {
                     if (err) {
                         console.log("error in creating resource group",err);
